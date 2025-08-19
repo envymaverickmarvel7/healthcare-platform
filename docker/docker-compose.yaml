@@ -1,36 +1,96 @@
+version: '3.8'
+
 services:
   backend:
-    build: ../backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: healthcare-backend
+    env_file:
+      - ./backend/.env
+    environment:
+      # fallback to local mongo service (overrides .env if set below)
+      MONGODB_URI: "mongodb://mongo:27017/healthcare"
     ports:
       - "5050:5050"
-    env_file:
-      - ../backend/.env
-  booking-portal:
-    build: ../apps/booking-portal
-    ports:
-      - "3001:80"
-  patient-portal:
-    build: ../apps/patient-portal
-    ports:
-      - "3002:80"
-  doctor-admin:
-    build: ../apps/doctor-admin
-    ports:
-      - "3003:80"
-  pathology-panel:
-    build: ../apps/pathology-panel
-    ports:
-      - "3004:80"
-  analytics-dashboard:
-    build: ../apps/analytics-dashboard
-    ports:
-      - "3005:80"
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - webnet
+
   mongo:
     image: mongo:6
-    restart: always
+    container_name: healthcare-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     ports:
       - "27017:27017"
     volumes:
-      - mongo-data:/data/db
+      - mongo_data:/data/db
+    restart: unless-stopped
+    networks:
+      - webnet
+
+  analytics-dashboard:
+    build:
+      context: .
+      dockerfile: ./apps/analytics-dashboard/Dockerfile
+    container_name: analytics-dashboard
+    ports:
+      - "5173:80"
+    restart: unless-stopped
+    networks:
+      - webnet
+
+  booking-portal:
+    build:
+      context: .
+      dockerfile: ./apps/booking-portal/Dockerfile
+    container_name: booking-portal
+    ports:
+      - "5174:80"
+    restart: unless-stopped
+    networks:
+      - webnet
+
+  doctor-admin:
+    build:
+      context: .
+      dockerfile: ./apps/doctor-admin/Dockerfile
+    container_name: doctor-admin
+    ports:
+      - "5175:80"
+    restart: unless-stopped
+    networks:
+      - webnet
+
+  pathology-panel:
+    build:
+      context: .
+      dockerfile: ./apps/pathology-panel/Dockerfile
+    container_name: pathology-panel
+    ports:
+      - "5176:80"
+    restart: unless-stopped
+    networks:
+      - webnet
+
+  patient-portal:
+    build:
+      context: .
+      dockerfile: ./apps/patient-portal/Dockerfile
+    container_name: patient-portal
+    ports:
+      - "5177:80"
+    restart: unless-stopped
+    networks:
+      - webnet
+
 volumes:
-  mongo-data:
+  mongo_data:
+
+networks:
+  webnet:
+    driver: bridge
