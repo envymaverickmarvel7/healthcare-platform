@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ./docker/backend
+    build: ../backend
     ports:
       - "5050:5050"
     env_file:
