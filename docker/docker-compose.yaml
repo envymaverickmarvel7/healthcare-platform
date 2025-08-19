@@ -8,25 +8,25 @@ services:
   booking-portal:
     build: ../apps/booking-portal
     ports:
-      - "3001:80"
+      - "5174:80"
   patient-portal:
     build: ../apps/patient-portal
     ports:
-      - "3002:80"
+      - "5177:80"
   doctor-admin:
     build: ../apps/doctor-admin
     ports:
-      - "3003:80"
+      - "5175:80"
   pathology-panel:
     build: ../apps/pathology-panel
     ports:
-      - "3004:80"
+      - "5176:80"
   analytics-dashboard:
     build: ../apps/analytics-dashboard
     ports:
-      - "3005:80"
+      - "5173:80"
   mongo:
-    image: mongo:6
+    image: mongo:8
     restart: always
     ports:
       - "27017:27017"
