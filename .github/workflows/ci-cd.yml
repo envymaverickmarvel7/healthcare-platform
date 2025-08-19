@@ -1,59 +1,41 @@
 name: CI/CD
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
-
+    branches:
+      - main
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    env:
-      CI: true
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@v3
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 10
-
+          version: 10.14.0
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "22.18.0"
           cache: pnpm
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
+        run: pnpm install
       - name: Turbo cache restore
-        uses: actions/cache@v4
+        uses: actions/cache@v3
         with:
           path: .turbo
           key: turbo-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-
       - name: Build all apps/packages
         run: pnpm build
-
       - name: Run tests
-        run: pnpm test --if-present
-
+        run: pnpm test
       - name: Lint
-        run: pnpm lint --if-present
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build Docker images (docker compose)
-        uses: docker/compose-action@v3.5.0
-        with:
-          files: docker/docker-compose.yaml
+        run: pnpm lint
+      - name: Install docker-compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
+      - name: Build Docker images
+        run: docker-compose -f docker/docker-compose.yaml build
 
