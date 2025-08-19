@@ -1,7 +1,7 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-  // Global ignores applied to all configurations
+  // Global ignores applied to all configs
   globalIgnores([
     "node_modules/",
     "dist/",
@@ -12,14 +12,14 @@ export default defineConfig([
     "*.config.ts",
   ]),
 
-  // Base config for all JavaScript files
+  // Base config for JavaScript files
   {
     files: ["**/*.js", "**/*.cjs", "**/*.mjs"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
       globals: {
-        // Add your globals here if needed
+        // Add any global variables if needed here
       },
     },
     rules: {
@@ -29,7 +29,7 @@ export default defineConfig([
     },
   },
 
-  // Override/add config for test files
+  // Config for test files
   {
     files: ["**/tests/**/*.js", "**/*.test.js", "**/*.spec.js"],
     languageOptions: {
@@ -50,12 +50,14 @@ export default defineConfig([
     },
   },
 
-  // Override for TypeScript files
+  // Config for TypeScript files
   {
     files: ["**/*.ts", "**/*.mts", "**/*.cts"],
     languageOptions: {
+      parser: "@typescript-eslint/parser",
       parserOptions: {
         project: "./tsconfig.json",
+        sourceType: "module",
       },
     },
     extends: [
@@ -64,7 +66,7 @@ export default defineConfig([
     ],
     plugins: ["@typescript-eslint"],
     rules: {
-      // Add TS-specific rules here
+      // Add TypeScript-specific rules here
     },
   },
 ]);
