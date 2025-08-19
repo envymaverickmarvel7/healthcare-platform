@@ -52,7 +52,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build Docker images (docker-compose)
+      - name: Build Docker images (docker compose)
         uses: docker/compose-action@v3
         with:
           files: docker/docker-compose.yaml
