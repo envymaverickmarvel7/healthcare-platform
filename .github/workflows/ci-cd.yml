@@ -1,56 +1,38 @@
 name: CI/CD
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'pnpm'
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 10.14.0
-
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: pnpm
       - name: Install dependencies
         run: pnpm install
-
       - name: Turbo cache restore
         uses: actions/cache@v3
         with:
           path: .turbo
           key: turbo-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-
       - name: Build all apps/packages
         run: pnpm build
-
       - name: Run tests
         run: pnpm test
-
       - name: Lint
         run: pnpm lint
-
       - name: Build Docker images
         run: docker-compose -f docker/docker-compose.yaml build
-
-      # Uncomment these lines to push Docker images if desired
-      # - name: Log in to registry
-      #   uses: docker/login-action@v2
-      #   with:
-      #     username: ${{ secrets.REGISTRY_USERNAME }}
-      #     password: ${{ secrets.REGISTRY_PASSWORD }}
-
-      # - name: Push images
-      #   run: docker-compose -f docker/docker-compose.yaml push
-
-      # Add deployment steps below if needed
