@@ -6,23 +6,23 @@ services:
     env_file:
       - ../backend/.env
   booking-portal:
-    build: ./apps/booking-portal
+    build: ../apps/booking-portal
     ports:
       - "3001:80"
   patient-portal:
-    build: ./apps/patient-portal
+    build: ../apps/patient-portal
     ports:
       - "3002:80"
   doctor-admin:
-    build: ./apps/doctor-admin
+    build: ../apps/doctor-admin
     ports:
       - "3003:80"
   pathology-panel:
-    build: ./apps/pathology-panel
+    build: ../apps/pathology-panel
     ports:
       - "3004:80"
   analytics-dashboard:
-    build: ./apps/analytics-dashboard
+    build: ../apps/analytics-dashboard
     ports:
       - "3005:80"
   mongo:
