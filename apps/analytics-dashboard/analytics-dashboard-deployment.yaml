@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-portal
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: booking-portal
+  template:
+    metadata:
+      labels:
+        app: booking-portal
+    spec:
+      containers:
+        - name: booking-portal
+          image: yourrepo/booking-portal:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-portal-service
+spec:
+  selector:
+    app: booking-portal
+  ports:
+    - port: 8080
+      targetPort: 80

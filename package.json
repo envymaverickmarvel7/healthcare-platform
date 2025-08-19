@@ -1,0 +1,21 @@
+{
+  "name": "healthcare-platform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "dev:all": "concurrently \"pnpm --filter backend run dev\" \"pnpm --filter analytics-dashboard run dev\" \"pnpm --filter booking-portal run dev\" \"pnpm --filter doctor-admin run dev\" \"pnpm --filter pathology-panel run dev\" \"pnpm --filter patient-portal run dev\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0",
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "turbo": "^2.5.6"
+  }
+}

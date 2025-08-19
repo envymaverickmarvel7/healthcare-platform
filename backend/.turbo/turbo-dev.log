@@ -1,0 +1,13 @@
+
+
+> backend@1.0.0 dev /home/abhinav/healthcare-platform/backend
+> nodemon index.js
+
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node index.js`[39m
+[dotenv@17.2.1] injecting env (6) from .env [2m-- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar[0m
+MongoDB connected
+Server running on port 5050
