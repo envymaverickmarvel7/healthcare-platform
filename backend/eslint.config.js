@@ -1,5 +1,4 @@
 import { defineConfig, globalIgnores } from "eslint/config";
-import tsPlugin from "@typescript-eslint/eslint-plugin";
 
 export default defineConfig([
   // Global ignores applied to all configurations
@@ -63,9 +62,7 @@ export default defineConfig([
       "eslint:recommended",
       "plugin:@typescript-eslint/recommended",
     ],
-    plugins: {
-      "@typescript-eslint": tsPlugin,
-    },
+    plugins: ["@typescript-eslint"],
     rules: {
       // Add TS-specific rules here
     },
