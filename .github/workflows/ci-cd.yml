@@ -35,4 +35,5 @@ jobs:
       - name: Lint
         run: pnpm lint
       - name: Build Docker images
-        run: docker-compose -f docker/docker-compose.yaml build
+        run: docker compose -f docker/docker-compose.yaml build
+
