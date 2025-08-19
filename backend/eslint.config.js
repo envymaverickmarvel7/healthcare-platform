@@ -1,4 +1,5 @@
 import { defineConfig, globalIgnores } from "eslint/config";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
 
 export default defineConfig([
   // Global ignores applied to all configurations
@@ -19,23 +20,21 @@ export default defineConfig([
       ecmaVersion: "latest",
       sourceType: "module",
       globals: {
-        // Add any global variables your project needs here
+        // Add your globals here if needed
       },
     },
     rules: {
-      semi: "error",             // Requires semicolons
-      "no-unused-vars": "warn",  // Warn on unused variables
-      "prefer-const": "error",   // Prefer const if variable is never reassigned
-      // Add your other general rules here
+      semi: "error",
+      "no-unused-vars": "warn",
+      "prefer-const": "error",
     },
   },
 
   // Override/add config for test files
   {
-    files: ["**/__tests__/**/*.js", "**/*.test.js", "**/*.spec.js"],
+    files: ["**/tests/**/*.js", "**/*.test.js", "**/*.spec.js"],
     languageOptions: {
       globals: {
-        // Common test globals
         describe: "readonly",
         it: "readonly",
         expect: "readonly",
@@ -47,13 +46,12 @@ export default defineConfig([
       },
     },
     rules: {
-      // Relaxed rules for tests if needed
       "no-console": "off",
-      "no-unused-expressions": "off"
+      "no-unused-expressions": "off",
     },
   },
 
-  // Override for TypeScript files (if using TS)
+  // Override for TypeScript files
   {
     files: ["**/*.ts", "**/*.mts", "**/*.cts"],
     languageOptions: {
@@ -66,10 +64,10 @@ export default defineConfig([
       "plugin:@typescript-eslint/recommended",
     ],
     plugins: {
-      "@typescript-eslint": require("@typescript-eslint/eslint-plugin"),
+      "@typescript-eslint": tsPlugin,
     },
     rules: {
-      // Add TypeScript specific rules here
+      // Add TS-specific rules here
     },
-  }
+  },
 ]);
