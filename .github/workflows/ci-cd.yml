@@ -1,41 +1,59 @@
-name: CI/CD
+name: CI/CD Pipeline
+
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
+
 jobs:
-  build-and-test:
+  build-test-lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [analytics-dashboard, booking-portal, doctor-admin, pathology-panel, patient-portal, backend]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8 # adjust as needed
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint ${{ matrix.app }}
+        working-directory: ${{ matrix.app == 'backend' && 'backend' || format('apps/{0}', matrix.app) }}
+        run: pnpm lint
+
+      - name: Test ${{ matrix.app }}
+        working-directory: ${{ matrix.app == 'backend' && 'backend' || format('apps/{0}', matrix.app) }}
+        run: pnpm test
+
+      - name: Build ${{ matrix.app }}
+        if: matrix.app != 'backend' # backend build handled separately if needed
+        working-directory: ${{ format('apps/{0}', matrix.app) }}
+        run: pnpm run build
+
+  docker-build:
+    needs: build-test-lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10.14.0
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "22.18.0"
-          cache: pnpm
-      - name: Install dependencies
-        run: pnpm install
-      - name: Turbo cache restore
-        uses: actions/cache@v3
-        with:
-          path: .turbo
-          key: turbo-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-      - name: Build all apps/packages
-        run: pnpm build
-      - name: Run tests
-        run: pnpm test
-      - name: Lint
-        run: pnpm lint
-      - name: Install docker-compose
-        run: sudo apt-get update && sudo apt-get install -y docker-compose
-      - name: Build Docker images
-        run: docker-compose -f docker/docker-compose.yaml build
 
+      - name: Build all frontend Docker images
+        run: |
+          for app in analytics-dashboard booking-portal doctor-admin pathology-panel patient-portal; do
+            echo "Building Docker image for $app"
+            docker build -f apps/$app/Dockerfile -t $app:latest .
+          done
