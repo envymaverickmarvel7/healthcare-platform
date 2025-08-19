@@ -7,7 +7,7 @@ COPY package.json pnpm-lock.yaml ./
 
 RUN npm install -g pnpm
 
-COPY apps/booking-portal/ ./
+COPY . .
 
 RUN pnpm install
 RUN pnpm run build
